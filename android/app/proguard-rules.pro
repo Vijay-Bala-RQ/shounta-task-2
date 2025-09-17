@@ -1,0 +1,2 @@
+-keep class com.example.flutter_bloc_bp.BuildConfig { *; }
+-keep class com.example.flutter_bloc_bp.staging.BuildConfig { *; }
