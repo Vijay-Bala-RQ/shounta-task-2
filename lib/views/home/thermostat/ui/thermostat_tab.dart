@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../app_routes.dart';
 import '../../../../models/models.dart';
+import '../../../global_widgets/toast_helper.dart';
 import '../../../global_widgets/widget_helper.dart';
 import '../../common_components.dart';
 import '../bloc/thermostat_bloc.dart';
@@ -18,7 +20,6 @@ class ThermostatTabPage extends StatefulWidget {
 
 class _ThermostatTabPageState extends State<ThermostatTabPage> {
   List<ThermostatDevice> devices = <ThermostatDevice>[];
-  bool isLoading = true;
 
   @override
   void initState() {
@@ -27,31 +28,17 @@ class _ThermostatTabPageState extends State<ThermostatTabPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<ThermostatBloc>().stream.listen((state) {
         if (state is ThermostatError) {
-          _showErrorMessage();
+          if (mounted) {
+            ToastHelper.showToast(
+                context: context,
+                message: 'Error loading thermostat devices. Please try again.',
+                isSuccess: false);
+          }
         }
       });
 
       context.read<ThermostatBloc>().add(FetchAllThermostats());
     });
-  }
-
-  void _showErrorMessage() {
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Error loading thermostat devices. Please try again.',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 14.sp,
-            ),
-          ),
-          backgroundColor: Colors.red,
-          duration: const Duration(seconds: 3),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-    }
   }
 
   @override
@@ -78,9 +65,24 @@ class _ThermostatTabPageState extends State<ThermostatTabPage> {
                   bloc.thermostatStateData.thermostats ?? [];
               if (state is ThermostatInitial ||
                   state is FetchAllThermostatsLoading) {
-                return const Center(
-                  child: CircularProgressIndicator(
-                    color: Colors.green,
+                return Skeletonizer(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
+                    child: GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 0.75,
+                        crossAxisSpacing: 8.w,
+                        mainAxisSpacing: 8.3,
+                      ),
+                      itemCount: 6,
+                      itemBuilder: (BuildContext context, int index) {
+                        return ThermostatCard(
+                          device: ThermostatDevice(),
+                          onTap: () {},
+                        );
+                      },
+                    ),
                   ),
                 );
               }

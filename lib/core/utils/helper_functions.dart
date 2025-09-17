@@ -8,12 +8,6 @@ Future<void> forceLogOut(BuildContext context) async {
   PreferencesClient(prefs: prefs).saveUser();
   PreferencesClient(prefs: prefs).setUserAccessToken();
   if (context.mounted) {
-    // Navigator.pushAndRemoveUntil(
-    //     context,
-    //     MaterialPageRoute<dynamic>(
-    //       builder: (_) => const LoginPage(),
-    //     ),
-    //     (Route<dynamic> route) => false);
     context.go('/login');
   }
 }

@@ -8,7 +8,6 @@ import '../../bloc/auth_bloc/auth_bloc.dart';
 import '../../core/common/common_bg.dart';
 import '../global_widgets/common_button.dart';
 import '../global_widgets/form_helper/text_field.dart';
-import '../global_widgets/widget_helper.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -52,21 +51,19 @@ class _LoginPageState extends State<LoginPage> {
           child: Form(
         key: logInFormKey,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          spacing: 20.h,
           children: <Widget>[
-            const Spacer(),
             CommonTextField(
                 customKey: const Key('username_textfield_key'),
                 controller: userNameController,
                 labelText: 'User Name',
                 validator: Validator.empty_validator),
-            getSpace(20.sp, 0),
             CommonTextField(
                 customKey: const Key('password_textfield_key'),
                 controller: passwordController,
                 labelText: 'Password',
                 validator: Validator.password_validator),
-            const Spacer(),
-            const Spacer(),
           ],
         ),
       )),

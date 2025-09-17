@@ -6,6 +6,7 @@ import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 import '../../../../core/common/common_bg.dart';
 import '../../../../core/common/common_fields.dart';
+import '../../../global_widgets/toast_helper.dart';
 import '../../../global_widgets/widget_helper.dart';
 import '../bloc/thermostat_bloc.dart';
 
@@ -26,7 +27,6 @@ class _ClimatePresetPageState extends State<ClimatePresetPage> {
   String? _selectedHvacMode;
   String? _selectedFanMode;
   bool _manualOverrideAllowed = false;
-  bool _isLoading = false;
 
   SfRangeValues _temperatureRange = const SfRangeValues(64.0, 74.0);
 
@@ -39,67 +39,23 @@ class _ClimatePresetPageState extends State<ClimatePresetPage> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<ThermostatBloc>().stream.listen((state) {
-        if (state is CreateClimatePresetLoading) {
-          setState(() {
-            _isLoading = true;
-          });
-        } else if (state is CreateClimatePresetSuccess) {
-          setState(() {
-            _isLoading = false;
-          });
-          _showSuccessMessage();
+        if (state is CreateClimatePresetSuccess) {
+          if (mounted) {
+            ToastHelper.showToast(
+                context: context,
+                message: 'Climate preset created successfully!');
+            context.pop();
+          }
         } else if (state is ThermostatError) {
-          setState(() {
-            _isLoading = false;
-          });
-          _showErrorMessage();
-        } else {
-          setState(() {
-            _isLoading = false;
-          });
+          if (mounted) {
+            ToastHelper.showToast(
+                context: context,
+                message: 'Error creating climate preset. Please try again.',
+                isSuccess: false);
+          }
         }
       });
     });
-  }
-
-  void _showSuccessMessage() {
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Climate preset created successfully!',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 14.sp,
-            ),
-          ),
-          backgroundColor: const Color(0xFF4CAF50),
-          duration: const Duration(seconds: 2),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-
-      context.pop();
-    }
-  }
-
-  void _showErrorMessage() {
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Error creating climate preset. Please try again.',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 14.sp,
-            ),
-          ),
-          backgroundColor: Colors.red,
-          duration: const Duration(seconds: 3),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-    }
   }
 
   @override
@@ -111,237 +67,254 @@ class _ClimatePresetPageState extends State<ClimatePresetPage> {
 
   @override
   Widget build(BuildContext context) {
-    return CommonBackgroundPage(
-      body: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
-            child: Row(
+    return BlocBuilder<ThermostatBloc, ThermostatState>(
+      builder: (context, state) {
+        return AbsorbPointer(
+          absorbing: state is CreateClimatePresetLoading,
+          child: CommonBackgroundPage(
+            body: Column(
               children: [
-                GestureDetector(
-                  onTap: () => context.pop(),
-                  child: Container(
-                    width: 40.w,
-                    height: 40.h,
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.arrow_back_outlined,
-                      size: 20.sp,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-                getSpace(0, 16.w),
-                Text(
-                  'Create\nClimate Preset',
-                  style: TextStyle(
-                    fontSize: 32.sp,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.black,
-                    height: 1.2,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: 20.w),
-              child: Column(
-                children: [
-                  getSpace(20.h, 0),
-                  CommonTextField(
-                    controller: _presetNameController,
-                    labelText: 'Preset Name',
-                    isRequired: true,
-                    isDisbaled: _isLoading,
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'Preset Name is required';
-                      }
-                      return null;
-                    },
-                  ),
-                  getSpace(16.h, 0),
-                  CommonTextField(
-                    controller: _presetKeyController,
-                    labelText: 'Preset Key',
-                    isRequired: true,
-                    isDisbaled: _isLoading,
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'Preset Key is required';
-                      }
-                      return null;
-                    },
-                  ),
-                  getSpace(16.h, 0),
-                  CommonDropdownField<String>(
-                    labelText: 'HVAC Mode',
-                    items: _hvacModes,
-                    selectedValue: _selectedHvacMode,
-                    isRequired: true,
-                    isDisbaled: _isLoading,
-                    onChanged: (String? value) {
-                      setState(() {
-                        _selectedHvacMode = value;
-                      });
-                    },
-                    validator: (value) {
-                      if (value == null) {
-                        return 'HVAC Mode is required';
-                      }
-                      return null;
-                    },
-                  ),
-                  getSpace(24.h, 0),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+                  child: Row(
                     children: [
-                      Text(
-                        'Desired temperature range',
-                        style: TextStyle(
-                          fontSize: 14.sp,
-                          color: const Color(0xFF919E80),
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      getSpace(16.h, 0),
-                      CommonSlider(
-                        values: _temperatureRange,
-                        onChanged: (SfRangeValues values) {
-                          setState(() {
-                            _temperatureRange = values;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                  getSpace(24.h, 0),
-                  CommonDropdownField<String>(
-                    labelText: 'Fan Mode',
-                    items: _fanModes,
-                    selectedValue: _selectedFanMode,
-                    isRequired: true,
-                    isDisbaled: _isLoading,
-                    onChanged: (String? value) {
-                      setState(() {
-                        _selectedFanMode = value;
-                      });
-                    },
-                    validator: (value) {
-                      if (value == null) {
-                        return 'Fan Mode is required';
-                      }
-                      return null;
-                    },
-                  ),
-                  getSpace(24.h, 0),
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 24.w,
-                        height: 24.h,
-                        child: Checkbox(
-                          value: _manualOverrideAllowed,
-                          onChanged: _isLoading
-                              ? null
-                              : (bool? value) {
-                                  setState(() {
-                                    _manualOverrideAllowed = value ?? false;
-                                  });
-                                },
-                          activeColor: const Color(0xFF4CAF50),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4.r),
+                      GestureDetector(
+                        onTap: () => context.pop(),
+                        child: Container(
+                          width: 40.w,
+                          height: 40.h,
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.arrow_back_outlined,
+                            size: 20.sp,
+                            color: Colors.black,
                           ),
                         ),
                       ),
-                      getSpace(0, 12.w),
+                      getSpace(0, 16.w),
                       Text(
-                        'Manual Override Allowed',
+                        'Create\nClimate Preset',
                         style: TextStyle(
-                          fontSize: 16.sp,
-                          color: _isLoading ? Colors.grey : Colors.black,
+                          fontSize: 32.sp,
                           fontWeight: FontWeight.w400,
+                          color: Colors.black,
+                          height: 1.2,
                         ),
                       ),
                     ],
                   ),
-                  getSpace(20.h, 0),
-                ],
-              ),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.all(20.w),
-            child: Row(
-              children: [
-                Expanded(
-                  child: GestureDetector(
-                    onTap: _isLoading ? null : () => context.pop(),
-                    child: Container(
-                      height: 48.h,
-                      decoration: BoxDecoration(
-                        color: _isLoading
-                            ? Colors.grey.withOpacity(0.5)
-                            : Colors.white,
-                        borderRadius: BorderRadius.circular(24.r),
-                        border: Border.all(width: 0.5.w),
-                      ),
-                      child: Center(
-                        child: Text(
-                          'Cancel',
-                          style: TextStyle(
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w400,
-                            color: _isLoading ? Colors.grey : Colors.black,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
                 ),
-                getSpace(0, 16.w),
                 Expanded(
-                  child: GestureDetector(
-                    onTap: _isLoading ? null : _savePreset,
-                    child: Container(
-                      height: 48.h,
-                      decoration: BoxDecoration(
-                        color: _isLoading ? Colors.grey : Colors.black,
-                        borderRadius: BorderRadius.circular(24.r),
-                      ),
-                      child: Center(
-                        child: _isLoading
-                            ? SizedBox(
-                                width: 20.w,
-                                height: 20.h,
-                                child: const CircularProgressIndicator(
-                                  color: Colors.white,
-                                  strokeWidth: 2,
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
+                    child: Column(
+                      children: [
+                        getSpace(20.h, 0),
+                        CommonTextField(
+                          controller: _presetNameController,
+                          labelText: 'Preset Name',
+                          isRequired: true,
+                          isDisbaled: state is CreateClimatePresetLoading,
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return 'Preset Name is required';
+                            }
+                            return null;
+                          },
+                        ),
+                        getSpace(16.h, 0),
+                        CommonTextField(
+                          controller: _presetKeyController,
+                          labelText: 'Preset Key',
+                          isRequired: true,
+                          isDisbaled: state is CreateClimatePresetLoading,
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return 'Preset Key is required';
+                            }
+                            return null;
+                          },
+                        ),
+                        getSpace(16.h, 0),
+                        CommonDropdownField<String>(
+                          labelText: 'HVAC Mode',
+                          items: _hvacModes,
+                          selectedValue: _selectedHvacMode,
+                          isRequired: true,
+                          isDisbaled: state is CreateClimatePresetLoading,
+                          onChanged: (String? value) {
+                            setState(() {
+                              _selectedHvacMode = value;
+                            });
+                          },
+                          validator: (value) {
+                            if (value == null) {
+                              return 'HVAC Mode is required';
+                            }
+                            return null;
+                          },
+                        ),
+                        getSpace(24.h, 0),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Desired temperature range',
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                color: const Color(0xFF919E80),
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            getSpace(16.h, 0),
+                            CommonSlider(
+                              values: _temperatureRange,
+                              onChanged: (SfRangeValues values) {
+                                setState(() {
+                                  _temperatureRange = values;
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                        getSpace(24.h, 0),
+                        CommonDropdownField<String>(
+                          labelText: 'Fan Mode',
+                          items: _fanModes,
+                          selectedValue: _selectedFanMode,
+                          isRequired: true,
+                          isDisbaled: state is CreateClimatePresetLoading,
+                          onChanged: (String? value) {
+                            setState(() {
+                              _selectedFanMode = value;
+                            });
+                          },
+                          validator: (value) {
+                            if (value == null) {
+                              return 'Fan Mode is required';
+                            }
+                            return null;
+                          },
+                        ),
+                        getSpace(24.h, 0),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 24.w,
+                              height: 24.h,
+                              child: Checkbox(
+                                value: _manualOverrideAllowed,
+                                onChanged: state is CreateClimatePresetLoading
+                                    ? null
+                                    : (bool? value) {
+                                        setState(() {
+                                          _manualOverrideAllowed =
+                                              value ?? false;
+                                        });
+                                      },
+                                activeColor: const Color(0xFF4CAF50),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(4.r),
                                 ),
-                              )
-                            : Text(
-                                'Save',
+                              ),
+                            ),
+                            getSpace(0, 12.w),
+                            Text(
+                              'Manual Override Allowed',
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                color: state is CreateClimatePresetLoading
+                                    ? Colors.grey
+                                    : Colors.black,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ],
+                        ),
+                        getSpace(20.h, 0),
+                      ],
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(20.w),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () => context.pop(),
+                          child: Container(
+                            height: 48.h,
+                            decoration: BoxDecoration(
+                              color: state is CreateClimatePresetLoading
+                                  ? Colors.grey.withOpacity(0.5)
+                                  : Colors.white,
+                              borderRadius: BorderRadius.circular(24.r),
+                              border: Border.all(width: 0.5.w),
+                            ),
+                            child: Center(
+                              child: Text(
+                                'Cancel',
                                 style: TextStyle(
                                   fontSize: 16.sp,
                                   fontWeight: FontWeight.w400,
-                                  color: Colors.white,
+                                  color: state is CreateClimatePresetLoading
+                                      ? Colors.grey
+                                      : Colors.black,
                                 ),
                               ),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
+                      getSpace(0, 16.w),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: state is CreateClimatePresetLoading
+                              ? null
+                              : _savePreset,
+                          child: Container(
+                            height: 48.h,
+                            decoration: BoxDecoration(
+                              color: state is CreateClimatePresetLoading
+                                  ? Colors.grey
+                                  : Colors.black,
+                              borderRadius: BorderRadius.circular(24.r),
+                            ),
+                            child: Center(
+                              child: state is CreateClimatePresetLoading
+                                  ? SizedBox(
+                                      width: 20.w,
+                                      height: 20.h,
+                                      child: const CircularProgressIndicator(
+                                        color: Colors.white,
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                  : Text(
+                                      'Save',
+                                      style: TextStyle(
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -370,14 +343,7 @@ class _ClimatePresetPageState extends State<ClimatePresetPage> {
     final int coolingTemp = (_temperatureRange.end as double).round();
 
     if (!isValid) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(errorMessage),
-          backgroundColor: const Color(0xFFF35A5A),
-          duration: const Duration(seconds: 2),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      ToastHelper.showToast(context: context, message: errorMessage, isSuccess: false);
       return;
     }
 

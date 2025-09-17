@@ -1,17 +1,17 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/utils/helper_functions.dart';
 import '../../../core/utils/utils.dart';
 import '../../../models/app_user.dart';
 import '../../../models/token.dart';
 import '../../api_services/auth_service.dart';
+import '../../app_routes.dart';
 import '../../core/base_bloc/base_bloc.dart';
 import '../../core/preference_client/preference_client.dart';
-import '../../views/auth/login_page.dart';
 import '../../views/global_widgets/toast_helper.dart';
-import '../../views/home/home_page.dart';
 import '../app_bloc/app_bloc.dart';
 
 part 'auth_event.dart';
@@ -90,21 +90,13 @@ Future<void> onAuthBlocChange(
     required AppBloc appBloc}) async {
   switch (state.runtimeType) {
     case const (LogOutSuccess):
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute<dynamic>(
-            builder: (_) => const LoginPage(),
-          ));
+    context.go(AppRoutes.loginPage);
 
     case const (LoginWithPasswordSuccess):
       final LoginWithPasswordSuccess currentState =
           state as LoginWithPasswordSuccess;
       appBloc.add(SaveCurrentUser(user: currentState.user));
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute<dynamic>(
-            builder: (_) => const HomePage(),
-          ));
+      context.go(AppRoutes.homePage);
 
     case const (AuthError):
       final AuthError currentState = state as AuthError;
@@ -112,9 +104,9 @@ Future<void> onAuthBlocChange(
         await forceLogOut(context);
       }
       if (context.mounted) {
-        ToastHelper.failureToast(
+        ToastHelper.showToast(
             context: context,
-            message: '${currentState.errorCode} : ${currentState.errorMsg}');
+            message: '${currentState.errorCode} : ${currentState.errorMsg}', isSuccess: false);
       }
   }
 }

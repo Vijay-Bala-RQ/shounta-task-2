@@ -102,7 +102,7 @@ class _CommonTextFieldWithLabelState extends State<CommonTextFieldWithLabel> {
               child: Opacity(
                 opacity: widget.isDisbaled ? 0.7 : 1,
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(16, 8.h, 16, 4),
+                  padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 4.h),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
@@ -145,9 +145,9 @@ class _CommonTextFieldWithLabelState extends State<CommonTextFieldWithLabel> {
                           }) =>
                               null,
                           inputFormatters: widget.inputFormatters,
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.black,
-                            fontSize: 14,
+                            fontSize: 14.sp,
                           ),
                           enabled: !widget.isDisbaled && !widget.isReadOnly,
                           onEditingComplete: widget.onEditingComplete,
@@ -165,9 +165,9 @@ class _CommonTextFieldWithLabelState extends State<CommonTextFieldWithLabel> {
                             contentPadding: EdgeInsets.zero,
                             hintText:
                                 widget.hintText ?? 'Enter ${widget.labelText}',
-                            hintStyle: const TextStyle(
-                              color: Color(0xFF919E80),
-                              fontSize: 14,
+                            hintStyle: TextStyle(
+                              color: const Color(0xFF919E80),
+                              fontSize: 14.sp,
                             ),
                             prefixIcon: (widget.icon != null
                                 ? Icon(
@@ -178,26 +178,26 @@ class _CommonTextFieldWithLabelState extends State<CommonTextFieldWithLabel> {
                                         : Colors.black,
                                   )
                                 : null),
-                            prefixIconConstraints: const BoxConstraints(
-                              minWidth: 24,
-                              minHeight: 24,
+                            prefixIconConstraints: BoxConstraints(
+                              minWidth: 24.w,
+                              minHeight: 24.h,
                             ),
                             isCollapsed: true,
                             errorStyle: const TextStyle(fontSize: 0),
-                            suffixIconConstraints: const BoxConstraints(
-                              minWidth: 24,
-                              minHeight: 24,
+                            suffixIconConstraints: BoxConstraints(
+                              minWidth: 24.w,
+                              minHeight: 24.h,
                             ),
                             suffixIcon: (widget.isPassword
                                 ? Padding(
-                                    padding: const EdgeInsets.only(right: 4),
+                                    padding: EdgeInsets.only(right: 4.w),
                                     child: IconButton(
                                       highlightColor: Colors.transparent,
                                       icon: Icon(
                                         _obscureText
                                             ? Icons.visibility
                                             : Icons.visibility_off,
-                                        size: 24,
+                                        size: 24.sp,
                                         color: widget.controller.text.isEmpty
                                             ? const Color(0xFF919E80)
                                             : Colors.black,
@@ -221,21 +221,21 @@ class _CommonTextFieldWithLabelState extends State<CommonTextFieldWithLabel> {
             ),
             if (errorValue != null && !(widget.isDisbaled || widget.isReadOnly))
               Padding(
-                padding: const EdgeInsets.only(left: 16, top: 8),
+                padding: EdgeInsets.only(left: 16.w, top: 8.h),
                 child: Row(
                   children: <Widget>[
-                    const Icon(
+                    Icon(
                       Icons.error,
-                      size: 16,
-                      color: Color(0xFFF35A5A),
+                      size: 16.sp,
+                      color: const Color(0xFFF35A5A),
                     ),
                     getSpace(4.h, 0),
                     Expanded(
                       child: Text(
                         errorValue,
-                        style: const TextStyle(
-                          color: Color(0xFFF35A5A),
-                          fontSize: 12,
+                        style: TextStyle(
+                          color: const Color(0xFFF35A5A),
+                          fontSize: 12.sp,
                         ),
                       ),
                     ),
@@ -397,11 +397,11 @@ class _CommonTextFieldState extends State<CommonTextField> {
                   borderRadius: BorderRadius.circular(20),
                   borderSide: BorderSide.none,
                 ),
-                contentPadding: EdgeInsets.fromLTRB(20, 26.h, 20, 26.h),
+                contentPadding: EdgeInsets.fromLTRB(20.w, 26.h, 20.w, 26.h),
                 hintText: _placeholderText,
-                hintStyle: const TextStyle(
-                  color: Color(0xFF919E80),
-                  fontSize: 14,
+                hintStyle: TextStyle(
+                  color: const Color(0xFF919E80),
+                  fontSize: 14.sp,
                 ),
                 prefixIcon: (widget.icon != null
                     ? Icon(
@@ -412,19 +412,19 @@ class _CommonTextFieldState extends State<CommonTextField> {
                             : Colors.black,
                       )
                     : null),
-                prefixIconConstraints: const BoxConstraints(
-                  minWidth: 24,
-                  minHeight: 24,
+                prefixIconConstraints: BoxConstraints(
+                  minWidth: 24.w,
+                  minHeight: 24.h,
                 ),
                 isCollapsed: true,
                 errorStyle: const TextStyle(fontSize: 0),
-                suffixIconConstraints: const BoxConstraints(
-                  minWidth: 24,
-                  minHeight: 24,
+                suffixIconConstraints: BoxConstraints(
+                  minWidth: 24.w,
+                  minHeight: 24.h,
                 ),
                 suffixIcon: (widget.isPassword
                     ? Padding(
-                        padding: const EdgeInsets.only(right: 4),
+                        padding: EdgeInsets.only(right: 4.w),
                         child: IconButton(
                           highlightColor: Colors.transparent,
                           icon: Icon(
@@ -508,8 +508,8 @@ class _CommonDropdownFieldState<T> extends State<CommonDropdownField<T>> {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
       ),
       builder: (BuildContext context) {
         return SafeArea(
@@ -517,12 +517,12 @@ class _CommonDropdownFieldState<T> extends State<CommonDropdownField<T>> {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Container(
-                width: 40,
-                height: 4,
-                margin: const EdgeInsets.symmetric(vertical: 12),
+                width: 40.w,
+                height: 4.h,
+                margin: EdgeInsets.symmetric(vertical: 12.h),
                 decoration: BoxDecoration(
                   color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(2),
+                  borderRadius: BorderRadius.circular(2.r),
                 ),
               ),
               Flexible(
@@ -534,9 +534,9 @@ class _CommonDropdownFieldState<T> extends State<CommonDropdownField<T>> {
                     return ListTile(
                       title: Text(
                         widget.displayText?.call(item) ?? item.toString(),
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: Colors.black,
-                          fontSize: 16,
+                          fontSize: 16.sp,
                         ),
                       ),
                       onTap: () {
@@ -567,7 +567,7 @@ class _CommonDropdownFieldState<T> extends State<CommonDropdownField<T>> {
               child: Container(
                 height: 68.h,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(20.r),
                   color: Colors.white,
                 ),
                 child: Opacity(
@@ -575,7 +575,7 @@ class _CommonDropdownFieldState<T> extends State<CommonDropdownField<T>> {
                   child: Stack(
                     children: <Widget>[
                       Padding(
-                        padding: EdgeInsets.fromLTRB(20, 26.h, 20, 26.h),
+                        padding: EdgeInsets.fromLTRB(20.w, 26.h, 20.w, 26.h),
                         child: Row(
                           children: <Widget>[
                             Expanded(
@@ -589,21 +589,21 @@ class _CommonDropdownFieldState<T> extends State<CommonDropdownField<T>> {
                                   color: widget.selectedValue != null
                                       ? Colors.black
                                       : const Color(0xFF919E80),
-                                  fontSize: 14,
+                                  fontSize: 14.sp,
                                 ),
                               ),
                             ),
-                            const Icon(
+                            Icon(
                               Icons.keyboard_arrow_down,
-                              color: Color(0xFF919E80),
-                              size: 24,
+                              color: const Color(0xFF919E80),
+                              size: 24.sp,
                             ),
                           ],
                         ),
                       ),
                       if (widget.isRequired && widget.selectedValue == null)
                         Positioned(
-                          left: 20,
+                          left: 20.w,
                           top: 26.h,
                           child: IgnorePointer(
                             child: RichText(
@@ -634,21 +634,21 @@ class _CommonDropdownFieldState<T> extends State<CommonDropdownField<T>> {
             ),
             if (errorValue != null && !widget.isDisbaled)
               Padding(
-                padding: const EdgeInsets.only(left: 16, top: 8),
+                padding: EdgeInsets.only(left: 16.w, top: 8.h),
                 child: Row(
                   children: <Widget>[
-                    const Icon(
+                    Icon(
                       Icons.error,
-                      size: 16,
-                      color: Color(0xFFF35A5A),
+                      size: 16.sp,
+                      color: const Color(0xFFF35A5A),
                     ),
                     getSpace(4.h, 0),
                     Expanded(
                       child: Text(
                         errorValue,
-                        style: const TextStyle(
-                          color: Color(0xFFF35A5A),
-                          fontSize: 12,
+                        style: TextStyle(
+                          color: const Color(0xFFF35A5A),
+                          fontSize: 12.sp,
                         ),
                       ),
                     ),
@@ -732,7 +732,7 @@ class _CommonSliderState extends State<CommonSlider> {
         ),
         getSpace(8.h, 0),
         SizedBox(
-          height: 1.5.w,
+          height: 1.5.h,
           child: SfRangeSlider(
             min: 50.0,
             max: 90.0,
