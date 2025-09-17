@@ -1,0 +1,85 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "production",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "debug",
+      "args": ["--flavor", "production"],
+      "toolArgs": ["--dart-define-from-file", ".env.production"]
+    },
+    {
+      "name": "staging",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "debug",
+      "args": ["--flavor", "staging"],
+      "toolArgs": ["--dart-define-from-file", ".env.staging"]
+    },
+    {
+      "name": "dev",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "debug",
+      "args": ["--flavor", "dev"],
+      "toolArgs": ["--dart-define-from-file", ".env.dev"]
+    },
+    {
+      "name": "qa",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "debug",
+      "args": ["--flavor", "qa"],
+      "toolArgs": ["--dart-define-from-file", ".env.qa"]
+    },
+    {
+      "name": "uat",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "debug",
+      "args": ["--flavor", "uat"],
+      "toolArgs": ["--dart-define-from-file", ".env.uat"]
+    },
+    {
+      "name": "production release",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "release",
+      "args": ["--flavor", "production"],
+      "toolArgs": ["--dart-define-from-file", ".env.production"]
+    },
+    {
+      "name": "staging release",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "release",
+      "args": ["--flavor", "staging"],
+      "toolArgs": ["--dart-define-from-file", ".env.staging"]
+    },
+    {
+      "name": "dev release",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "release",
+      "args": ["--flavor", "dev"],
+      "toolArgs": ["--dart-define-from-file", ".env.dev"]
+    },
+    {
+      "name": "qa release",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "release",
+      "args": ["--flavor", "qa"],
+      "toolArgs": ["--dart-define-from-file", ".env.qa"]
+    },
+    {
+      "name": "uat release",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "release",
+      "args": ["--flavor", "uat"],
+      "toolArgs": ["--dart-define-from-file", ".env.uat"]
+    }
+  ]
+}
