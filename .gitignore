@@ -55,4 +55,4 @@ app.*.map.json
 /coverage/
 
 #uncomment this
-#.env*
+.env*
